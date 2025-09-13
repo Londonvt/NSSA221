@@ -54,11 +54,11 @@ def main():
         if choice == "1":
             default_gateway()
         elif choice == "2":
-            test_local_connectivity
+            test_local_connectivity()
         elif choice == "3":
-            test_remote_connectivity
+            test_remote_connectivity()
         elif choice == "4":
-            test_dns_resolution
+            test_dns_resolution()
         elif choice == "5":
             print("Exiting Script\n")
             break
