@@ -1,29 +1,40 @@
 #!/usr/bin/python   
 
+
+# Name: London von Tungeln
+# Date: 9/12/2025
+
 import subprocess
 import os
+import re
+
+def clear_screen():
+    os.system('clear')
 
 def default_gateway():
     try:
-        response = subprocess.check_output("ip route | grep default",shell=True,text=True)
-        print("Default Gateway: ")
-        print(response.strip())
-        print("\n")
+        response = subprocess.check_output("ip route | grep default",shell=True,text=True).strip()
+        match = re.search(r"\d+\.\d+\.\d+\.\d+", response)
+        if match:
+            print(f"Default Gateway: {match.group(0)}\n")
+        else:
+            print("Gateway could not be found\n")
+            
     except subprocess.CalledProcessError:
         print("Could not determine default gateway.\n")
 
 def test_local_connectivity():
     print("Testing Local Connection (127.0.0.1)...\n")
     response = subprocess.run(["ping","-c","4","127.0.0.1"])
-    if response.returncode == 0:
+    if response.returncode == 0: # 0 means it ran successfully, negative number means it didn't
         print("Local Connectivity Test: SUCCESS")
     else:
         print("Local Connectivity Test: FAIL")
 
 def test_remote_connectivity():
     print("Testing Remote Connection (129.21.3.17)...\n")
-    response = subprocess.run(["ping","-c","4","129.21.3.17"])
-    if response.returncode == 0:
+    response = subprocess.run(["ping","-c","4","129.21.3.17"]) #linux don'
+    if response.returncode == 0: # 0 means it ran successfully, negative number means it didn't
         print("Remote Connectivity Test: SUCCESS")
     else:
         print("Remote Connectivity Test: FAIL")
@@ -41,6 +52,7 @@ def test_dns_resolution():
         print("File Not Found Error\n")
 
 def main():
+    clear_screen()
     while True:
         print("\n ---Network Test Menu---\n")
         print("1. Display the Default Gateway\n")
