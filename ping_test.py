@@ -34,7 +34,7 @@ def test_dns_resolution():
         response = subprocess.check_output("dig +short www.google.com",shell=True,text=True)
         if response.strip():
             print("DNS Resolution Test: SUCCESS\n")
-            print(response.strip)
+            print(response.strip())
         else:
             print("DNS Resolution Test: SUCCESS\n")
     except FileNotFoundError:
