@@ -14,16 +14,16 @@ def default_gateway():
 
 def test_local_connectivity():
     print("Testing Local Connection (127.0.0.1)...\n")
-    response = subprocess.check_output("ping -c 4 127.0.0.1",shell=True,text=True)
-    if response == 0:
+    response = subprocess.run(["ping","-c","4","127.0.0.1"])
+    if response.returncode == 0:
         print("Local Connectivity Test: SUCCESS")
     else:
         print("Local Connectivity Test: FAIL")
 
 def test_remote_connectivity():
     print("Testing Remote Connection (129.21.3.17)...\n")
-    response = subprocess.check_output("ping -c 4 129.21.3.17",shell=True,text=True)
-    if response == 0:
+    response = subprocess.run(["ping","-c","4","129.21.3.17"])
+    if response.returncode == 0:
         print("Remote Connectivity Test: SUCCESS")
     else:
         print("Remote Connectivity Test: FAIL")
