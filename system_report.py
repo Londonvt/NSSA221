@@ -49,6 +49,7 @@ def system_report():
     print("Ip Address: " + run_command("hostname -I"))
     print("Gateway: " + run_command("ip route | grep default | awk '{print$3}'"))
     print("Subnet Mask: " + get_mask())
+    print("DNS Servers: " + run_command("nmcli dev show | grep dns| awk '{print $2}'") )
 
     #Operating System Information
 
