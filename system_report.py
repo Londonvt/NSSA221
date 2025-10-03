@@ -46,8 +46,8 @@ def system_report():
 
     #Network Information
     print("Network Information")
-    print("Ip Address" + run_command("hostname -I"))
-    print("Gateway: " + run_command("ip route | grep default | awk '{print%3}'"))
+    print("Ip Address: " + run_command("hostname -I"))
+    print("Gateway: " + run_command("ip route | grep default | awk '{print$3}'"))
     print("Subnet Mask: " + get_mask())
 
     #Operating System Information
