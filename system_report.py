@@ -30,7 +30,7 @@ def get_mask():
                     else:
                         octets.append(sum(2**(7-i) for i in range(mask_length)))
                         mask_length = 0
-                return ".".join(octets)
+                return ".".join(map(str,octets))
 
 def system_report():
 
