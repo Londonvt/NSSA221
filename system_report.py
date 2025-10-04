@@ -77,11 +77,14 @@ def system_report():
 
     #CPU Information
     print("\nCPU Information")
+
+    cores = run_command("grep 'physical id' /proc/cpuinfo | sort -u | wc -l")
     cpu_model = run_command("grep 'model name' /proc/cpuinfo").split(":")[1]
+    processors = run_command("grep -c ^processor /proc/cpuinfo")
 
     print(F"CPU Model: {cpu_model.strip()}" )
-    print(F"Number of Processors: {run_command("grep -c ^processor /proc/cpuinfo")}")
-    print(F"Number of Cores: {run_command("grep 'physical id' /proc/cpuinfo | sort -u | wc -l")}")
+    print(F"Number of Processors: {processors}")
+    print(F"Number of Cores: {cores}")
 
     #Ram Information
     print("\nRAM Information")
