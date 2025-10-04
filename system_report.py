@@ -56,17 +56,17 @@ def system_report():
 
     raw_os_name = run_command("grep '^PRETTY_NAME=' /etc/os-release").strip()
     os_name = raw_os_name.split('=')[1].strip('"')
-    print("Operating System: " + os_name)
-
-    raw_os_version = run_command("grep '^VERSION_ID=' /etc/os-release").strip()
-    os_version = raw_os_name.split('=')[1].strip('"')
-    print("OS Version" + os_version)
     
-    print("Kernel Version" + run_command("uname -r"))
+    raw_os_version = run_command("grep '^VERSION_ID=' /etc/os-release").strip()
+    os_version = raw_os_version.split('=')[1].strip('"')
+
+    print("Operating System: " + os_name)
+    print("OS Version: " + os_version)
+    print("Kernel Version: " + run_command("uname -r"))
 
     #Storage Information
     df_line = run_command("df -h /").splitlines()[1]
-    parts = df_line.splitlines()
+    parts = df_line.split()
     total, used, free = parts[0],parts[1],parts[2]
 
     print(f"System Drive Total: {total}")
