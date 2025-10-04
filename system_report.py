@@ -34,7 +34,7 @@ def get_mask(): #gets subnet mask
 
 def system_report():
 
-    run_command("clear")
+    os.system("clear")
 
     date = datetime.datetime.now().strftime("%B %d, %Y")
     print("System Report - " + date + "\n")
