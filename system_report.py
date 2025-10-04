@@ -45,14 +45,14 @@ def system_report():
     print("Domain: " + domain)
 
     #Network Information
-    print("Network Information")
+    print("\nNetwork Information")
     print("Ip Address: " + run_command("hostname -I"))
     print("Gateway: " + run_command("ip route | grep default | awk '{print$3}'"))
     print("Subnet Mask: " + get_mask())
-    print("DNS Servers: " + run_command("nmcli dev show | grep DNS| awk '{print $2}'") )
+    print("DNS Servers: \n" + run_command("nmcli dev show | grep DNS| awk '{print $2}'") )
 
     #Operating System Information
-    print("\nOperating System")
+    print("\nOperating System Information")
 
     raw_os_name = run_command("grep '^PRETTY_NAME=' /etc/os-release").strip()
     os_name = raw_os_name.split('=')[1].strip('"')
@@ -60,14 +60,16 @@ def system_report():
     raw_os_version = run_command("grep '^VERSION_ID=' /etc/os-release").strip()
     os_version = raw_os_version.split('=')[1].strip('"')
 
-    print("Operating System: " + os_name)
-    print("OS Version: " + os_version)
-    print("Kernel Version: " + run_command("uname -r"))
+    print(f"Operating System: {os_name}")
+    print(f"OS Version: " + os_version)
+    print(f"Kernel Version: {run_command("uname -r")}")
 
     #Storage Information
     df_line = run_command("df -h /").splitlines()[1]
     parts = df_line.split()
     total, used, free = parts[1],parts[2],parts[3]
+
+    print("\nStorage Information")
 
     print(f"System Drive Total: {total}")
     print(f"System Drive Used: {used}")
@@ -76,9 +78,19 @@ def system_report():
     #CPU Information
     print("\nCPU Information")
     cpu_model = run_command("grep 'model name' /proc/cpuinfo").split(":")[1]
-    print("CPU Model: " + cpu_model.strip())
-    print("Number of Processors: " + run_command("grep -c ^processor /proc/cpuinfo"))
-    print("Number of Cores: " + run_command("grep 'physical id' /proc/cpuinfo | sort -u | wc -l"))
+
+    print(F"CPU Model: {cpu_model.strip()}" )
+    print(F"Number of Processors: {run_command("grep -c ^processor /proc/cpuinfo")}")
+    print(F"Number of Cores: {run_command("grep 'physical id' /proc/cpuinfo | sort -u | wc -l")}")
+
+    #Ram Information
+    print("\nRAM Information")
+
+    total_ram = run_command("free -h | grep Mem: | awk '{print$2}'")
+    available_ram = run_command("free -h | grep Mem: | awk '{print$7}'")
+
+    print(F"Total Ram: {total_ram}")
+    print(F"Available Ram: {available_ram}")
 
 
 def main():
