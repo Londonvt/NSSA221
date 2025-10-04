@@ -100,6 +100,6 @@ def system_report():
 
 def main():
     
-    subprocess.run("python3 system_report.py > system_report.txt", shell=True)
+    system_report()
 
 main()
