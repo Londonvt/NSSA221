@@ -13,26 +13,28 @@ import socket
 def run_command(cmd):
     return subprocess.getoutput(cmd).strip()
 
-def get_mask():
-    output = run_command("ip -f inet addr")
+def get_mask(): #gets subnet mask
+    output = run_command("ip -f inet addr") 
     for line in output.splitlines():
         line = line.strip()
         if line.startswith('inet'):
             ip_cidr =line.split()[1]
-            ip, mask_length = ip_cidr.split("/")
-            if not ip.startswith("127."):
+            ip, mask_length = ip_cidr.split("/") #gives subnetmask in /## format
+            if not ip.startswith("127."): #skips localhost 
                 mask_length = int(mask_length)
                 octets = []
                 for _ in range(4):
-                    if mask_length >= 8:
+                    if mask_length >= 8: # if over 8, automatically sets octet to 255, decrements 8, and continues
                         octets.append(255)
                         mask_length-= 8
                     else:
-                        octets.append(sum(2**(7-i) for i in range(mask_length)))
+                        octets.append(sum(2**(7-i) for i in range(mask_length))) # recursively does 2^7-i
                         mask_length = 0
-                return ".".join(map(str,octets))
+                return ".".join(map(str,octets)) # converts int to str and joins strings into 1
 
 def system_report():
+
+    run_command("clear")
 
     date = datetime.datetime.now().strftime("%B %d, %Y")
     print("System Report - " + date + "\n")
@@ -78,9 +80,9 @@ def system_report():
     #CPU Information
     print("\nCPU Information")
 
-    cores = run_command("grep 'physical id' /proc/cpuinfo | sort -u | wc -l")
+    cores = run_command("grep 'physical id' /proc/cpuinfo | sort -u | wc -l") # counts all lines with physical id to find total 
     cpu_model = run_command("grep 'model name' /proc/cpuinfo").split(":")[1]
-    processors = run_command("grep -c ^processor /proc/cpuinfo")
+    processors = run_command("grep -c ^processor /proc/cpuinfo") #counts number of processors
 
     print(F"CPU Model: {cpu_model.strip()}" )
     print(F"Number of Processors: {processors}")
