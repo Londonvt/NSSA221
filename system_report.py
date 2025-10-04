@@ -61,8 +61,8 @@ def system_report():
     os_version = raw_os_version.split('=')[1].strip('"')
 
     print(f"Operating System: {os_name}")
-    print(f"OS Version: " + os_version)
-    print(f"Kernel Version: {run_command("uname -r")}")
+    print(f"OS Version: {os_version}")
+    print("Kernel Version: " + run_command("uname -r"))
 
     #Storage Information
     df_line = run_command("df -h /").splitlines()[1]
