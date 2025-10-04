@@ -55,7 +55,13 @@ def system_report():
     print("\nOperating System")
     raw_os_name = run_command("grep '^PRETTY_NAME=' /etc/os-release").strip()
     os_name = raw_os_name.split('=')[1].strip('"')
-    print("Operating System: " + os_name)
+    print("Operating System: " + raw_os_name)
+
+    raw_os_version = run_command("grep '^VERSION_ID=' /etc/os-release").strip()
+    os_version = raw_os_name.split('=')[1].strip('"')
+    print("OS Version")
+
+    print("Kernel Version" + run_command("uname -r"))
 
     #Storage Information
 
