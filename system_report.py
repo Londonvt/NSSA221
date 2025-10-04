@@ -52,6 +52,10 @@ def system_report():
     print("DNS Servers: " + run_command("nmcli dev show | grep DNS| awk '{print $2}'") )
 
     #Operating System Information
+    print("\nOperating System")
+    raw_os_name = run_command("grep '^PRETTY_NAME=' /etc/os-release").strip()
+    os_name = raw_os_name.split('=')[1].strip('"')
+    print("Operating System: " + os_name)
 
     #Storage Information
 
