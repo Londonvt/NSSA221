@@ -53,19 +53,33 @@ def system_report():
 
     #Operating System Information
     print("\nOperating System")
+
     raw_os_name = run_command("grep '^PRETTY_NAME=' /etc/os-release").strip()
     os_name = raw_os_name.split('=')[1].strip('"')
-    print("Operating System: " + raw_os_name)
+    print("Operating System: " + os_name)
 
     raw_os_version = run_command("grep '^VERSION_ID=' /etc/os-release").strip()
     os_version = raw_os_name.split('=')[1].strip('"')
-    print("OS Version")
-
+    print("OS Version" + os_version)
+    
     print("Kernel Version" + run_command("uname -r"))
 
     #Storage Information
+    df_line = run_command("df -h /").splitlines()[1]
+    parts = df_line.splitlines()
+    total, used, free = parts[1],parts[2],parts[3]
 
-    #
+    print(f"System Drive Total: {total}")
+    print(f"System Drive Used: {used}")
+    print(f"System Drive Free: {free}")
+
+    #CPU Information
+    print("\nCPU Information")
+    cpu_model = run_command("grep 'model name' /proc/cpuinfo").split(":")[1]
+    print("CPU Model: " + cpu_model.strip())
+    print("Number of Processors: " + run_command("grep -c ^processor /proc/cpuinfo"))
+    print("Number of Cores: " + run_command("grep 'physical id' /proc/cpuinfo | sort -u | wc -l"))
+
 
 def main():
     
