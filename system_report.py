@@ -67,7 +67,7 @@ def system_report():
     #Storage Information
     df_line = run_command("df -h /").splitlines()[1]
     parts = df_line.split()
-    total, used, free = parts[0],parts[1],parts[2]
+    total, used, free = parts[1],parts[2],parts[3]
 
     print(f"System Drive Total: {total}")
     print(f"System Drive Used: {used}")
