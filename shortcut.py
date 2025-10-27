@@ -1,10 +1,9 @@
-#!/usr/bin/python   
+#!/usr/bin/python
 
 
 # Name: London von Tungeln
 # Date: 10/26/2025
 
-import subprocess
 import os
 from pathlib import Path
 
@@ -17,10 +16,14 @@ def createSymbolicLink(): # symbolic link on desktop to ANY file
     source = Path(input("Enter the full path of the file to link: ").strip())
 
     if not source.exists():
-        print("Error: file does not exist or cannot be found. Please try again.")
+        print(f"Error: file does not exist or cannot be found. Please try again.")
         return
     
     link_path = DESKTOP / source.name
+
+    print(f"Source: '{source}'")
+    print(f"Link path: '{link_path}'")
+    print(f"Exists? {link_path.exists()}")
 
     if link_path.exists(): 
         print(f"Error: A file or link named '{source.name}' already exists on your desktop.")
@@ -28,9 +31,9 @@ def createSymbolicLink(): # symbolic link on desktop to ANY file
     
     try:
         os.symlink(source, link_path)
-        print(f"Symbolic link created: '{link_path}")
+        print(f"Symbolic link created: '{link_path}'")
     except PermissionError:
-        print("Error: Permission denied. Please run the script with sufficient privleges.")
+        print(f"Error: Permission denied. Please run the script with sufficient privleges.")
     except Exception as e:
         print(f"Error: Unexpected Error: '{e}'")
     
@@ -39,7 +42,7 @@ def deleteSymbolicLink(): # delete symbolic link on desktop
     link_name = input("Enter the name of the symbolic link to delete (e.g., hello.txt): ").strip()
     link_path = DESKTOP / link_name
 
-    if not link_path.exists and not link_path.is_symlink():
+    if not link_path.exists() and not link_path.is_symlink():
         print(f"Error: '{link_name}' does not exist on your desktop.")
         return
     
@@ -55,11 +58,11 @@ def deleteSymbolicLink(): # delete symbolic link on desktop
     
 
 def generateReport(): #lists all symbolic links on desktop, their target paths, and count of links in the user's home directory
-    symlinks = [f for f in DESKTOP.iterdir() if f.is_symlink] # Array of symlinks
+    symlinks = [f for f in DESKTOP.iterdir() if f.is_symlink()] # Array of symlinks
 
-    print("\n === Symbolic Link Report ===")
+    print(f"\n === Symbolic Link Report ===")
     if not symlinks:
-        print("No symbolic links found on your desktop.")
+        print(f"No symbolic links found on your desktop.")
     else:
         for link in symlinks:
             target = os.readlink(link)
@@ -71,25 +74,25 @@ def main(): # clears terminal, handles UI
     os.system("clear")
 
     while True:
-        print("\n=== Symbolic Link Manager ===")
-        print("[1] Create Symbolic Link")
-        print("[2] Delete Symbolic Link")
-        print("[3] Generate a Symbolic Link Report")
-        print("[4] Quit")
+        print(f"\n=== Symbolic Link Manager ===")
+        print(f"[1] Create Symbolic Link")
+        print(f"[2] Delete Symbolic Link")
+        print(f"[3] Generate a Symbolic Link Report")
+        print(f"[4] Quit")
 
         choice = input("Select an option: ").strip()
 
         if choice == '1':
             createSymbolicLink()
-        if choice == '2':
+        elif choice == '2':
             deleteSymbolicLink()
-        if choice == '3':
+        elif choice == '3':
             generateReport()
-        if choice == '4' or choice.lower() == 'quit':
-            print("Exiting")
+        elif choice == '4' or choice.lower() == 'quit':
+            print(f"Exiting...")
             break
         else:
-            print("Invalid Option. Please choose 1-4")
+            print(f"Invalid Option. Please choose 1-4")
 
 if __name__ == "__main__":
     main()
