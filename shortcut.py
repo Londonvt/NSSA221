@@ -58,17 +58,27 @@ def deleteSymbolicLink(): # delete symbolic link on desktop
     
 
 def generateReport(): #lists all symbolic links on desktop, their target paths, and count of links in the user's home directory
-    symlinks = [f for f in DESKTOP.iterdir() if f.is_symlink()] # Array of symlinks
+    
+    print("\n=== Symbolic Link Report===\n")
+    symlinks_list = [] 
 
-    print(f"\n === Symbolic Link Report ===")
-    if not symlinks:
+    for path in HOME.rglob("*"):
+        if path.is_symlink():
+            try:
+                target = os.readlink(path)
+            except OSError:
+                target = "broken link"
+            symlinks_list.append((path.relative_to(HOME), target))
+
+    if not symlinks_list:
         print(f"No symbolic links found on your desktop.")
     else:
-        for link in symlinks:
-            target = os.readlink(link)
-            print(f"{link.name} -> {target}")
-    total_links = sum(1 for f in HOME.rglob("*") if f.is_symlink())
-    print(f"\n Total Symbolic links in home directory: {total_links}")
+        print(f"Symbolic links found:")
+        for link, target in symlinks_list:
+            print(f"- {link} -> {target}")
+    
+    print(f"\n Total Symbolic links in home directory: {len(symlinks_list)}\n")
+    print("=" * 40)
 
 def main(): # clears terminal, handles UI
     os.system("clear")
