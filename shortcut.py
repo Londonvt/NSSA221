@@ -10,14 +10,11 @@ from pathlib import Path
 DESKTOP = Path.home() / "Desktop"
 HOME = Path.home()
 
-def find_file(filename):
-    """
-    Searches the entire filesystem for files with given name.
-    Returns list of Path objects.
-    """
+def find_file(file_name):
+    """Searches the entire filesystem for files with the given name."""
 
     matches = []
-    for path in Path("/").rglob(filename): 
+    for path in Path("/").rglob(file_name): 
         try:
             if path.is_file():
                 matches.append(path)
@@ -25,32 +22,31 @@ def find_file(filename):
             continue
     return matches
 
-def createSymbolicLink(): 
-    """
-    Creates a symbolic link on the Desktop for any file specified by filename.
-    The script searches the system for matching files and allows users to select if multiple files are found.
-    """
+def create_symbolic_link(): 
+    """Creates a symbolic link on the Desktop for a specified file."""
     
-    filename = input("Enter the name of the file to link (e.g, test.txt): ").strip()
-    matches = list(HOME.rglob(filename)) # looks for every single file with that name
+    file_name = input(
+        "Enter the name of the file to link (e.g, test.txt): "
+    ).strip()
+    matches = list(HOME.rglob(file_name))
 
     if not matches:
-        print(f"Error: No file named '{filename}' exists in any directory")
+        print(f"Error: No file named '{file_name}' exists in any directory")
         return
 
     if len(matches) > 1:
-        print(f"Multiple files named '{filename}' found: ")    
-        for i, f in enumerate(matches, 1):
-            print(f"[{i}] {f}")
+        print(f"Multiple files named '{file_name}' found: ")    
+        for index, path in enumerate(matches, 1):
+            print(f"[{index}] {path}")
         choice = input("Enter the number for the file you want to link: ").strip()
 
         try:
             choice = int(choice)
             if not (1 <= choice <= len(matches)):
-                print("Error: Invalid Choice.")
+                print(f"Error: Invalid Choice.")
                 return
         except ValueError:
-            print("Error. Invalid Input.")
+            print(f"Error: Invalid Input.")
             return
         
         source = matches[choice - 1]
@@ -65,17 +61,17 @@ def createSymbolicLink():
     
     try:
         os.symlink(source, link_path)
-        print(f"Symbolic link created: '{link_path}'")
+        print(f"Symbolic link created: {link_path}")
     except PermissionError:
-        print(f"Error: Permission denied. Please run the script with sufficient privleges.")
+        print(
+            "Error: Permission denied. Please run the script with sufficient privileges."
+        )
     except Exception as e:
-        print(f"Error: Unexpected Error: '{e}'")
+        print(f"Error: Unexpected Error: {e}")
     
 
-def deleteSymbolicLink(): 
-    """
-    Deletes a symbolic link on the Desktop by filename.
-    """
+def delete_symbolic_link(): 
+    """Deletes a symbolic link on the Desktop by file_name."""
 
     link_name = input("Enter the name of the symbolic link to delete (e.g., hello.txt): ").strip()
     link_path = DESKTOP / link_name
@@ -95,14 +91,11 @@ def deleteSymbolicLink():
         print(f"Error deleting symbolic link: {e}")
     
 
-def generateReport(): 
-    """
-    Generate a report of all symbolic links in Home directory.
-    Show each link and its target, and the total count.
-    """
+def generate_report(): 
+    """Generate a report of all symbolic links in Home directory."""
 
     print("\n=== Symbolic Link Report===\n")
-    symlinks_list = [] 
+    symlinks = [] 
 
     for path in HOME.rglob("*"):
         if path.is_symlink():
@@ -110,16 +103,16 @@ def generateReport():
                 target = os.readlink(path)
             except OSError:
                 target = "broken link"
-            symlinks_list.append((path.relative_to(HOME), target))
+            symlinks.append((path.relative_to(HOME), target))
 
-    if not symlinks_list:
-        print(f"No symbolic links found on your desktop.")
+    if not symlinks:
+        print("No symbolic links found on your desktop.")
     else:
-        print(f"Symbolic links found:")
-        for link, target in symlinks_list:
+        print("Symbolic links found:")
+        for link, target in symlinks:
             print(f"- {link} -> {target}")
     
-    print(f"\n Total Symbolic links in home directory: {len(symlinks_list)}\n")
+    print(f"\nTotal Symbolic links in home directory: {len(symlinks)}\n")
     print("=" * 40)
 
 def main(): 
@@ -132,25 +125,25 @@ def main():
     print(f"Working Directory: {os.getcwd()}\n")
 
     while True:
-        print(f"\n=== Symbolic Link Manager ===")
-        print(f"[1] Create Symbolic Link")
-        print(f"[2] Delete Symbolic Link")
-        print(f"[3] Generate a Symbolic Link Report")
-        print(f"[4] Quit")
+        print("\n=== Symbolic Link Manager ===")
+        print("[1] Create Symbolic Link")
+        print("[2] Delete Symbolic Link")
+        print("[3] Generate a Symbolic Link Report")
+        print("[4] Quit")
 
-        choice = input("Select an option: ").strip()
+        choice = input("Select an option: ").strip().lower()
 
         if choice == '1':
-            createSymbolicLink()
+            create_symbolic_link()
         elif choice == '2':
-            deleteSymbolicLink()
+            delete_symbolic_link()
         elif choice == '3':
-            generateReport()
-        elif choice == '4' or choice.lower() == 'quit':
-            print(f"Exiting...")
+            generate_report()
+        elif choice in ("4", "quit"):
+            print("Exiting...")
             break
         else:
-            print(f"Invalid Option. Please choose 1-4")
+            print("Invalid Option. Please choose 1-4")
 
 if __name__ == "__main__":
     main()
