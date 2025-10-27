@@ -10,20 +10,45 @@ from pathlib import Path
 DESKTOP = Path.home() / "Desktop"
 HOME = Path.home()
 
+def find_file(filename):
+    matches = []
+    for path in Path("/").rglob(filename): 
+        try:
+            if path.is_file():
+                matches.append(path)
+        except PermissionError:
+            continue
+    return matches
+
 def createSymbolicLink(): # symbolic link on desktop to ANY file
     
-    
-    source = Path(input("Enter the full path of the file to link: ").strip())
+    filename = input("Enter the name of the file to link (e.g, test.txt): ").strip()
 
-    if not source.exists():
-        print(f"Error: file does not exist or cannot be found. Please try again.")
+    matches = list(HOME.rglob(filename)) # looks for every single file with that name
+
+    if not matches:
+        print(f"Error: No file named '{filename}' exists in any directory")
         return
-    
-    link_path = DESKTOP / source.name
 
-    print(f"Source: '{source}'")
-    print(f"Link path: '{link_path}'")
-    print(f"Exists? {link_path.exists()}")
+    if len(matches) > 1:
+        print(f"Multiple files named '{filename}' found: ")    
+        for i,f in matches:
+            print(f"[{i}] {f}")
+        choice = input("Enter the number for the file you want to link: ").strip()
+        try:
+            choice = int(choice)
+            if not (1 <= choice <= len(matches)):
+                print("Error: Invalid Choice.")
+                return
+        except ValueError:
+            print("Error. Invalid Input.")
+            return
+        source = matches[choice - 1]
+    else:
+        source = matches[0]
+
+
+    link_path = DESKTOP / source.name
 
     if link_path.exists(): 
         print(f"Error: A file or link named '{source.name}' already exists on your desktop.")
