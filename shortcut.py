@@ -11,6 +11,11 @@ DESKTOP = Path.home() / "Desktop"
 HOME = Path.home()
 
 def find_file(filename):
+    """
+    Searches the entire filesystem for files with given name.
+    Returns list of Path objects.
+    """
+
     matches = []
     for path in Path("/").rglob(filename): 
         try:
@@ -20,10 +25,13 @@ def find_file(filename):
             continue
     return matches
 
-def createSymbolicLink(): # symbolic link on desktop to ANY file
+def createSymbolicLink(): 
+    """
+    Creates a symbolic link on the Desktop for any file specified by filename.
+    The script searches the system for matching files and allows users to select if multiple files are found.
+    """
     
     filename = input("Enter the name of the file to link (e.g, test.txt): ").strip()
-
     matches = list(HOME.rglob(filename)) # looks for every single file with that name
 
     if not matches:
@@ -35,6 +43,7 @@ def createSymbolicLink(): # symbolic link on desktop to ANY file
         for i, f in enumerate(matches, 1):
             print(f"[{i}] {f}")
         choice = input("Enter the number for the file you want to link: ").strip()
+
         try:
             choice = int(choice)
             if not (1 <= choice <= len(matches)):
@@ -43,13 +52,13 @@ def createSymbolicLink(): # symbolic link on desktop to ANY file
         except ValueError:
             print("Error. Invalid Input.")
             return
+        
         source = matches[choice - 1]
     else:
         source = matches[0]
 
 
     link_path = DESKTOP / source.name
-
     if link_path.exists(): 
         print(f"Error: A file or link named '{source.name}' already exists on your desktop.")
         return
@@ -63,7 +72,11 @@ def createSymbolicLink(): # symbolic link on desktop to ANY file
         print(f"Error: Unexpected Error: '{e}'")
     
 
-def deleteSymbolicLink(): # delete symbolic link on desktop
+def deleteSymbolicLink(): 
+    """
+    Deletes a symbolic link on the Desktop by filename.
+    """
+
     link_name = input("Enter the name of the symbolic link to delete (e.g., hello.txt): ").strip()
     link_path = DESKTOP / link_name
 
@@ -82,8 +95,12 @@ def deleteSymbolicLink(): # delete symbolic link on desktop
         print(f"Error deleting symbolic link: {e}")
     
 
-def generateReport(): #lists all symbolic links on desktop, their target paths, and count of links in the user's home directory
-    
+def generateReport(): 
+    """
+    Generate a report of all symbolic links in Home directory.
+    Show each link and its target, and the total count.
+    """
+
     print("\n=== Symbolic Link Report===\n")
     symlinks_list = [] 
 
@@ -105,8 +122,14 @@ def generateReport(): #lists all symbolic links on desktop, their target paths, 
     print(f"\n Total Symbolic links in home directory: {len(symlinks_list)}\n")
     print("=" * 40)
 
-def main(): # clears terminal, handles UI
+def main(): 
+    """
+    Main menu for symbolic link manager.
+    Clears the terminal, shows current working directory, and handles user input.
+    """
+
     os.system("clear")
+    print(f"Working Directory: {os.getcwd()}\n")
 
     while True:
         print(f"\n=== Symbolic Link Manager ===")
