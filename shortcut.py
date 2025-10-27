@@ -22,7 +22,7 @@ def createSymbolicLink(): # symbolic link on desktop to ANY file
     
     link_path = DESKTOP / source.name
 
-    if link_path.exists: 
+    if link_path.exists(): 
         print(f"Error: A file or link named '{source.name}' already exists on your desktop.")
         return
     
