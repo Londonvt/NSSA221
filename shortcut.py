@@ -32,7 +32,7 @@ def createSymbolicLink(): # symbolic link on desktop to ANY file
 
     if len(matches) > 1:
         print(f"Multiple files named '{filename}' found: ")    
-        for i,f in matches:
+        for i, f in enumerate(matches, 1):
             print(f"[{i}] {f}")
         choice = input("Enter the number for the file you want to link: ").strip()
         try:
