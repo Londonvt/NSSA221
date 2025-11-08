@@ -8,19 +8,19 @@ import os
 import re
 import datetime
 from collections import defaultdict
-from geoip import geolite2
+import geoip2.database
 
-GEOIP_DB = ""
 LOG_FILE = "syslog.log"
 THRESHOLD = 10
-
 IP_PATTERN = re.compile(r'(\d+\.\d+\.\d+\.\d+)') 
 FAIL_PATTERN = 'Failed password for root'
+GEOIP_DB = "GeoLite2-Country.mmdb"
 
-attempts_count = defaultdict(int)
 
 def parse_file():
     """Reads log files and outputs the ips that exceed failed login attempt limit"""
+    attempts_count = defaultdict(int)
+
     with open(LOG_FILE, "r") as log:
         for line in log:
             if FAIL_PATTERN in line:
@@ -36,13 +36,17 @@ def parse_file():
 
     return suspicious_ips
 
-def get_country_code(ip):
+def get_country_code(ip, reader):
+
     """Takes IP and returns country code"""
-    match = geolite2.lookup(ip)
-    print(f"DEBUG: IP={ip}, match={match}")  # <- debug line
-    if match and match.country:
-        return match.country
-    return '??'
+    try:
+        response = reader.country(ip)
+        if response.country.iso_code:
+            return response.country.iso_code
+        return '??'
+    except Exception as e:
+        print(f"Error looking up ip {ip}: {e}")
+        return "??"
 
 def main(): 
     """Clears terminal and handles output of code"""
@@ -56,13 +60,14 @@ def main():
         return
     
     print(f"{'COUNT':<6}{'IP ADDRESS':<16}{'COUNTRY':<3}")
-    for ip, count in sorted(
-        suspicious_ips.items(),
-        key=lambda item: item[1],   # sort by second element of tuple
-        reverse=True                # highest to lowest
-    ):
-        country = get_country_code(ip)
-        print(f"{count:<6}{ip:<16}{country:<3}")
+    with geoip2.database.Reader(GEOIP_DB) as reader:
+        for ip, count in sorted(
+            suspicious_ips.items(),
+            key=lambda item: item[1],   # sort by second element of tuple
+            reverse=True                # highest to lowest
+        ):
+            country = get_country_code(ip, reader)
+            print(f"{count:<6}{ip:<16}{country:<3}")
 
 
 
